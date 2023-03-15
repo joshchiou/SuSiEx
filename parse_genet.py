@@ -114,20 +114,21 @@ def parse_sumstats(sst_file, ref_dict, chrom, bp, chr_col, snp_col, bp_col, a1_c
             
             if all(map(lambda x: x not in comm_snp, [(snp, a1, a2), (snp, a2, a1), (snp, mapping[a1], mapping[a2]), (snp, mapping[a2], mapping[a1])])):
                 continue
-
-            if (a1=='A' and a2=='T') or (a1=='T' and a2=='A') or (a1=='G' and a2=='C') or (a1=='C' and a2=='G'):
-                if ambig != 'TRUE':
-                    continue
                     
             if header[eff_col-1] == 'BETA':
                 beta = float(ll[eff_col-1])
             elif header[eff_col-1] == 'OR':
                 beta = sp.log(float(ll[eff_col-1]))
-            if ((snp, a2, a1) in comm_snp and (snp, a1, a2) not in comm_snp) or ((snp, mapping[a2], mapping[a1]) in comm_snp and (snp, mapping[a1], mapping[a2]) not in comm_snp):
-                beta *= -1
-
             se = float(ll[se_col-1])
             pval = max(float(ll[pval_col-1]), 1e-323)
+            
+            if a1 == mapping[a]2:
+                if ambig != 'TRUE':
+                    continue
+                elif ((snp, a2, a1) in comm_snp and (snp, a1, a2) not in comm_snp):
+                    beta *= -1
+            elif ((snp, mapping[a2], mapping[a1]) in comm_snp and (snp, mapping[a1], mapping[a2]) not in comm_snp):
+                beta *= -1
             
             # sst_eff.update({snp: sp.sign(beta)*abs(norm.ppf(pval/2.0))/n_sqrt})
             sst_eff.update({snp: beta/se/n_sqrt})
