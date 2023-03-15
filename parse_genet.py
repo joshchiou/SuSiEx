@@ -111,6 +111,9 @@ def parse_sumstats(sst_file, ref_dict, chrom, bp, chr_col, snp_col, bp_col, a1_c
                 sst_logp.update({snp: 0.0})
                 sst_miss.update({snp: True})
                 continue
+            
+            if all(map(lambda x: x not in comm_snp, [(snp, a1, a2), (snp, a2, a1), (snp, mapping[a1], mapping[a2]), (snp, mapping[a2], mapping[a1])])):
+                continue
 
             if (a1=='A' and a2=='T') or (a1=='T' and a2=='A') or (a1=='G' and a2=='C') or (a1=='C' and a2=='G'):
                 if ambig != 'TRUE':
